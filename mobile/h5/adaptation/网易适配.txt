@@ -1,0 +1,127 @@
+
+网易实现 h5 适配思路:
+    手机屏幕宽度(375px)与设计稿宽度(750px)比作为font-size 大小。但此时计算出的font-size值小于12px会造成一些错误和奇怪的问题，因此把比例扩大100倍;
+公式: font-size = 屏幕宽度 / 设计稿宽度 * 100; 
+实例：
+    已手机宽度 375px 和 设计稿 750px 为例
+    375 / 750 * 100 = 50px
+    所以 html font-size = 50px;
+
+网易最新适配使用了如上方式计算出 html font-size 大小后将其 html font-size 转为 vw 单位的值。使得 html font-size 可跟随视口动态变化。
+750px === 100vw
+1vw === 7.50px
+font-size = 375 / 750 * 100 = 50px
+font-size = 100vw / 750 * 100 = 13.3333333vw;
+
+html font-size 可设置为 13.3333333vw;
+
+
+代码实现：
+ html {
+     font-size: 13.3333333vw;
+ }
+
+ @media screen and (max-width: 320px) {
+     html {
+        font-size: 42.6666667px;
+        font-size: 13.3333333vw;
+     }
+ }
+
+ @media screen and (max-width: 320px) {
+     html {
+        font-size: 42.6666667px;
+        font-size: 13.3333333vw;
+     }
+ }
+
+ @media screen and (max-width: 320px) {
+     html {
+        font-size: 42.6666667px;
+        font-size: 13.3333333vw;
+     }
+ }
+
+ @media screen and(min-width: 321px) and (max-width: 360px) {
+     html {
+        font-size: 48px;
+        font-size: 13.3333333vw;
+     }
+ }
+
+
+  @media screen and(min-width: 361px) and (max-width: 375px) {
+     html {
+        font-size: 50px;
+        font-size: 13.3333333vw;
+     }
+ }
+
+   @media screen and(min-width: 376px) and (max-width: 414px) {
+     html {
+        font-size: 55.2px;
+        font-size: 13.3333333vw;
+     }
+ }
+
+    @media screen and(min-width: 376px) and (max-width: 414px) {
+        html {
+            font-size: 55.2px;
+            font-size: 13.3333333vw;
+        }
+     }
+
+     @media screen and (min-width: 415px) and (max-width: 480px)
+        html {
+            font-size: 64px;
+            font-size: 13.33333vw;
+        }
+    }
+
+    @media screen and (min-width: 481px) and (max-width: 540px)
+        html {
+            font-size: 72px;
+            font-size: 13.33333vw;
+        }
+    }
+
+    @media screen and (min-width: 541px) and (max-width: 640px)
+        html {
+            font-size: 85.33px;
+            font-size: 13.33333vw;
+        }
+    }
+
+    @media screen and (min-width: 641px) and (max-width: 720px)
+        html {
+            font-size: 96px;
+            font-size: 13.33333vw;
+        }
+    }
+
+    @media screen and (min-width: 721px) and (max-width: 768px)
+        html {
+            font-size: 102.4px;
+            font-size: 13.33333vw;
+        }
+    }
+
+    @media screen and (min-width: 769px) {
+        font-size: 102.4px;
+        font-size: 13.3333333vw;
+    }
+ }
+
+
+
+
+为兼容不支持 vw 的浏览器使用 px 设置 font-size
+vw设置font-size对比js动态设置的优点
+    纯css方式设置根font-size，不会出现js动态设置font-size失败的情况，页面始终可以正常展示
+    js动态设置的方式下，页面初始化依赖于js代码执行完成。同时需要监听分辨率的变化，去重新计算当前的font-size，使得css与js耦合在了一起。
+    纯css的方式性能体验较好，css渲染时机优于js，css会在页面初始化时生成css dom，避免了js设置后的css重新计算
+
+为什么要搭配vw和rem
+    直接使用vw来实现布局，依赖于视口大小而自动缩放，无论视口过大还是过小，它也随着视口过大或者过小，失去了最大最小宽度的限制
+    给根元素大小设置随着视口变化而变化的 vw 单位，这样就可以实现动态改变其大小，同时限制根元素的字体大小的最大最小值，配合body加上最大宽度和最小宽度，实现对布局宽度的最大自小的限制
+    针对之前的rem布局方案来说，改动量很小，只需要增加一段css代码，便可以兼容之前的布局
