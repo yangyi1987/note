@@ -1,0 +1,16 @@
+饿了么 h5 适配方式
+    公式 = 屏幕宽度 * dpr / 10 
+    dpr 为像素比 = 物理像素/css像素(window.devicePixelRatio 像素比);
+
+实现方式：
+    html 上添加 data-dpr = window.devicePixelRatio  属性
+    html font-size = 屏幕宽度 * dpr / 10;
+
+实例： 
+    375 px 
+        data-dpr = 2;
+        font-size = 375 * 2 / 10 = 75px;
+    
+    414px
+        data-dpr = 3;
+        font-size = 375 * 3 / 10 = 123.3px;
