@@ -1,0 +1,33 @@
+1. ES Module 和 commonjs Module 的区别
+
+    1.Es Module 是对模块的引用 commonjs Module 是对模块的拷贝
+
+
+2. Commonjs Module 循环引用问题（a->b, b->c, c->a）
+        1.  require: require 加载一个模块(脚本)，就会执行该脚本，并且在内存中生产一个对象。
+        2.  require 同一个文件多次时第一次会进行如下操作，后面将从缓存中取值
+            CJM: require('./a.js'); 1.判断缓存有无当前模块（无） -> 2. 初始化模块 module -> 3.将该模块加入缓存中 -> 执行该模块中的内容
+        CommonJS的做法是，一旦出现某个模块被"循环加载"，就只输出已经执行的部分，还未执行的部分不会输出。
+            a.js 
+                exports.done = false;
+                var b = require('./b.js');
+                console.log('在 a.js 之中，b.done = %j', b.done);
+                exports.done = true;
+                console.log('a.js 执行完毕');
+            b.js
+                exports.done = false;
+                var a = require('./a.js');
+                console.log('在 b.js 之中，a.done = %j', a.done);
+                exports.done = true;
+                console.log('b.js 执行完毕');
+            main.js
+                var a = require('./a.js');
+                var b = require('./b.js');
+                console.log('在 main.js 之中, a.done=%j, b.done=%j', a.done, b.done);
+            结果:
+                在 b.js 之中，a.done = false
+                b.js 执行完毕
+                在 a.js 之中，b.done = true
+                a.js 执行完毕
+                在 main.js 之中, a.done=true, b.done=true
+2. ES6模块的循环加载
